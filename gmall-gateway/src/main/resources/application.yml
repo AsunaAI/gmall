@@ -29,6 +29,28 @@ spring:
           uri: lb://wms-service
           predicates:
             - Path=/wms/**
+        - id: search-route
+          uri: lb://search-service
+          predicates:
+            - Path=/api/search/**
+          filters:
+            - RewritePath=/api(?<segment>/?.*), $\{segment}
+        - id: index-route
+          uri: lb://index-service
+          predicates:
+            - Path=/api/index/**
+          filters:
+            - RewritePath=/api(?<segment>/?.*), $\{segment}
+        - id: item-route
+          uri: lb://item-service
+          predicates:
+            - Path=/api/item/**
+          filters:
+            - RewritePath=/api(?<segment>/?.*), $\{segment}
+gmall:
+  jwt:
+    pubKeyPath: F:\\my_java\\rsa\\rsa.pub # 公钥地址
+    cookieName: GMALL_TOKEN
 
 
 

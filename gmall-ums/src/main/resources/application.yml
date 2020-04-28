@@ -1,0 +1,27 @@
+server:
+  port: 8082
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.200.128:3306/guli_ums
+    username: root
+    password: root
+  redis:
+    host: 192.168.200.128
+  rabbitmq:
+    host: 192.168.200.128
+    port: 5672
+    virtual-host: /yukino
+    username: yukino
+    password: yukino
+    template:
+      exchange: GMALL-LETTER-EXCHANGE
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+  mapper-locations: classpath:mapper/ums/**/*.xml
