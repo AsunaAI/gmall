@@ -47,6 +47,25 @@ spring:
             - Path=/api/item/**
           filters:
             - RewritePath=/api(?<segment>/?.*), $\{segment}
+        - id: auth-route
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - RewritePath=/api(?<segment>/?.*), $\{segment}
+        - id: cart-route
+          uri: lb://cart-service
+          predicates:
+            - Path=/api/cart/**
+          filters:
+            - RewritePath=/api(?<segment>/?.*), $\{segment}
+        - id: order-route
+          uri: lb://order-service
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - RewritePath=/api(?<segment>/?.*), $\{segment}
+            - Auth
 gmall:
   jwt:
     pubKeyPath: F:\\my_java\\rsa\\rsa.pub # 公钥地址

@@ -12,6 +12,14 @@ spring:
     password: root
   redis:
     host: 192.168.200.128
+  rabbitmq:
+    host: 192.168.200.128
+    port: 5672
+    virtual-host: /yukino
+    username: yukino
+    password: yukino
+    template:
+      exchange: GMALL_ORDER_EXCHANGE
 mybatis-plus:
   global-config:
     db-config:

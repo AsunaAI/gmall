@@ -38,4 +38,10 @@ public class CartController {
         this.cartService.deleteCart(skuId);
         return Resp.ok(null);
     }
+
+    @GetMapping("{userId}")
+    public Resp<List<Cart>> queryCheckedCartsByUserId(@PathVariable("userId") Long userId) {
+        List<Cart> carts = this.cartService.queryCheckedCartsByUserId(userId);
+        return Resp.ok(carts);
+    }
 }

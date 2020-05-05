@@ -8,11 +8,11 @@ spring:
   redis:
     host: 192.168.200.128
   rabbitmq:
-      host: 192.168.200.128
-      port: 5672
-      virtual-host: /yukino
-      username: yukino
-      password: yukino
+    host: 192.168.200.128
+    port: 5672
+    virtual-host: /yukino
+    username: yukino
+    password: yukino
 gmall:
   jwt:
     pubKeyPath: F:\\my_java\\rsa\\rsa.pub # 公钥地址

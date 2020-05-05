@@ -7,7 +7,7 @@ import com.atguigu.gmall.cart.feign.GmallSmsClient;
 import com.atguigu.gmall.cart.feign.GmallWmsClient;
 import com.atguigu.gmall.cart.interceptors.LoginInterceptor;
 import com.atguigu.gmall.cart.pojo.Cart;
-import com.atguigu.gmall.cart.pojo.UserInfo;
+import com.atguigu.core.bean.UserInfo;
 import com.atguigu.gmall.pms.entity.SkuInfoEntity;
 import com.atguigu.gmall.pms.entity.SkuSaleAttrValueEntity;
 import com.atguigu.gmall.sms.vo.SaleVo;
@@ -156,5 +156,13 @@ public class CartService {
         if(boundHashOps.hasKey(skuId.toString())) {
             boundHashOps.delete(skuId.toString());
         }
+    }
+
+    public List<Cart> queryCheckedCartsByUserId(Long userId) {
+        BoundHashOperations<String, Object, Object> boundHashOps = this.redisTemplate.boundHashOps(KEY_PREFIX + userId);
+        List<Object> cartJsonList = boundHashOps.values();
+        return cartJsonList.stream()
+                .map(cartJson -> JSON.parseObject(cartJson.toString(),Cart.class))
+                .filter(Cart::getCheck).collect(Collectors.toList());
     }
 }

@@ -9,10 +9,13 @@ import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class CartListener {
@@ -24,6 +27,7 @@ public class CartListener {
     private GmallPmsClient pmsClient;
 
     private static final String PRICE_PREFIX = "gmall:sku:";
+    private static final String KEY_PREFIX = "gmall:cart:";
 
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(value = "cart-item-queue", durable = "true"),
@@ -36,5 +40,21 @@ public class CartListener {
         skuInfoEntities.forEach(skuInfoEntity -> {
             this.redisTemplate.opsForValue().set(PRICE_PREFIX + skuInfoEntity.getSkuId(), skuInfoEntity.getPrice().toString());
         });
+    }
+
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(value = "cart-delete-queue", durable = "true"),
+            exchange = @Exchange(value = "GMALL_ORDER_EXCHANGE", type = ExchangeTypes.TOPIC, ignoreDeclarationExceptions = "true"),
+            key = {"cart.delete"}
+    ))
+    public void deleteListener(Map<String, Object> map) {
+        Long userId = (Long) map.get("userId");
+        List<Object> skuIds = (List<Object>) map.get("skuIds");
+
+        BoundHashOperations<String, Object, Object> boundHashOps = this.redisTemplate.boundHashOps(KEY_PREFIX + userId);
+        List<String> skus = skuIds.stream().map(skuId -> skuId.toString()).collect(Collectors.toList());
+        String[] ids = skus.toArray(new String[skus.size()]);
+
+        boundHashOps.delete(ids);
     }
 }
